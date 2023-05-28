@@ -33,7 +33,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-        <footer className={styles.footer}>Esto es el footer</footer>
       </Layaout>
     </>
   );

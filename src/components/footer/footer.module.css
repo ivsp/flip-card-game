@@ -1,0 +1,20 @@
+.footerContainer {
+  width: 100%;
+  background-color: #ba73d8;
+  height: 100%;
+  color: #fff;
+  min-height: 8vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 0.5rem;
+}
+.footerContainer__images {
+  display: flex;
+  gap: 1rem;
+}
+.footerContainer__images > a {
+  font-size: 20px;
+  padding-top: 0.5rem;
+}

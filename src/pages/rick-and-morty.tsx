@@ -1,9 +1,58 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
-import HeaderDesktop from "@/components/headerDesktop/headerDesktop";
 import Layaout from "@/components/layaout/layaout";
+import { useEffect, useState } from "react";
+import { GetStaticProps, NextPage } from "next";
+import {
+  CardData,
+  GetRickMortyCharacterResults,
+  RickMortyCharacter,
+} from "@/interfaces/interfaces";
+import styles from "@/styles/Rick.module.css";
+import CharacterComponent from "@/components/characterComponents/characterComponent";
+import useWindowSize from "@/hooks/useWindowSize";
+import { BREAKPOINT_DESKTOP } from "@/global/const";
 
-export default function RickAndMortyPage() {
+const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
+  characters,
+}) => {
+  const size = useWindowSize();
+  const [numberOfImages, setNumberOfImages] = useState(8);
+  console.log(numberOfImages);
+  const [selectedCharacters, setSelectedCharacters] = useState<CardData[] | []>(
+    []
+  );
+  function shuffleAndSliceArray(n: number, array: RickMortyCharacter[]) {
+    const shuffled: RickMortyCharacter[] = array.sort(
+      () => 0.5 - Math.random()
+    );
+    const selected: RickMortyCharacter[] = shuffled.slice(0, n);
+    return selected;
+  }
+
+  function shuffleAArray(array: CardData[]) {
+    const shuffled: CardData[] = array.sort(() => 0.5 - Math.random());
+    return shuffled;
+  }
+  useEffect(() => {
+    if (size > BREAKPOINT_DESKTOP) setNumberOfImages(9);
+    else setNumberOfImages(8);
+  }, [size]);
+
+  useEffect(() => {
+    const suffleData = shuffleAndSliceArray(numberOfImages, characters);
+    const data: CardData[] = suffleData.map((char) => ({
+      id: char.id,
+      name: char.name,
+      image: char.image,
+    }));
+    const duplicatedData = data.concat(data);
+    const shuffleDuplicatedData = shuffleAArray(duplicatedData);
+
+    setSelectedCharacters(shuffleDuplicatedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [size]);
+  console.log(selectedCharacters);
+
   return (
     <>
       <Head>
@@ -16,8 +65,37 @@ export default function RickAndMortyPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layaout>
-        <h1>Rick and Morty page</h1>
+        <h1 className={styles.cardsContainerLimits_title}>
+          Rick and Morty page
+        </h1>
+        <article className={styles.cardsContainerLimits}>
+          <div className={styles.cardsContainer}>
+            {selectedCharacters.map((char, i) => (
+              <div key={i} className={styles.cardsContainer__item}>
+                <CharacterComponent
+                  name={char.name}
+                  image={char.image}
+                  id={char.id}
+                />
+              </div>
+            ))}
+          </div>
+        </article>
       </Layaout>
     </>
   );
-}
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await fetch(
+    "https://rickandmortyapi.com/api/character/?page=1"
+  );
+  const { results }: GetRickMortyCharacterResults = await response.json();
+  return {
+    props: {
+      characters: results,
+    },
+  };
+};
+
+export default RickAndMortyPage;

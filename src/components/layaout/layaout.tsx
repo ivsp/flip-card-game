@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import HeaderMobile from "../headerMobile/headerMobile";
 import HeaderDesktop from "../headerDesktop/headerDesktop";
 import styles from "@/styles/Home.module.css";
+import Footer from "../footer/footer";
 
 function Layaout({ children }: { children: React.ReactNode }) {
   const size = useWindowSize();
@@ -16,6 +17,7 @@ function Layaout({ children }: { children: React.ReactNode }) {
         <HeaderDesktop />
       )}
       {children}
+      <Footer />
     </main>
   );
 }
