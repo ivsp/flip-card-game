@@ -1,0 +1,56 @@
+.headerMobileContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 1.5rem 0rem;
+  position: relative;
+}
+.headerMobileContainer_image {
+  z-index: 999;
+  position: relative;
+}
+.headerMobileContainer_menuIcon {
+  margin-left: 2rem;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.containerModal {
+  height: 50vh;
+  width: 100%;
+  background-color: #d5dbdb;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 100px;
+  left: 0;
+  z-index: 99;
+}
+.containerModal_navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.containerModal_navbar_list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  list-style-type: none;
+  font-family: "Roboto Serif";
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+}
+.containerModal_navbar_list > a {
+  display: flex;
+  align-items: center;
+}
+.containerModal_navbar_list > li {
+  text-align: center;
+  border-bottom: 1px solid #1e1e1c;
+  min-width: 150px;
+  margin-top: 3.5rem;
+}
