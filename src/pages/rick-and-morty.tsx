@@ -16,8 +16,9 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
   characters,
 }) => {
   const size = useWindowSize();
-  const [numberOfImages, setNumberOfImages] = useState(8);
-  console.log(numberOfImages);
+  const [numberOfImages, setNumberOfImages] = useState(
+    size > BREAKPOINT_DESKTOP ? 9 : 8
+  );
   const [selectedCharacters, setSelectedCharacters] = useState<CardData[] | []>(
     []
   );
@@ -40,18 +41,28 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
 
   useEffect(() => {
     const suffleData = shuffleAndSliceArray(numberOfImages, characters);
-    const data: CardData[] = suffleData.map((char) => ({
-      id: char.id,
-      name: char.name,
-      image: char.image,
-    }));
+    const data: CardData[] = suffleData.map((char, i) => {
+      return {
+        id: char.id,
+        name: char.name,
+        image: char.image,
+        position: i,
+      };
+    });
     const duplicatedData = data.concat(data);
     const shuffleDuplicatedData = shuffleAArray(duplicatedData);
-
     setSelectedCharacters(shuffleDuplicatedData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [size]);
-  console.log(selectedCharacters);
+  }, [size, numberOfImages]);
+
+  /**
+   * Crear una variable que recoja 2 cartas seleccionadas. Pasaremos por props para hacer un push a esa variable
+   * Crear un useEfect que se ejecute cada vez que se actualiza la variable anterior.
+   * 1. Si la longitud del array es 2 se comprueba si los id de las cartas son iguales
+   * 2. Si lo son, asignar una clase especial para que no se ejecute el evento más
+   * 3. Si no lo son, volver a voltear ambas cartas después de 2s
+   * useEffect que recoja los datos de las cards seleccionadas
+   */
 
   return (
     <>
@@ -71,13 +82,15 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
         <article className={styles.cardsContainerLimits}>
           <div className={styles.cardsContainer}>
             {selectedCharacters.map((char, i) => (
-              <div key={i} className={styles.cardsContainer__item}>
-                <CharacterComponent
-                  name={char.name}
-                  image={char.image}
-                  id={char.id}
-                />
-              </div>
+              //   <div key={i} className={styles.cardsContainer__item}>
+              <CharacterComponent
+                key={i}
+                name={char.name}
+                image={char.image}
+                id={char.id}
+                position={i}
+              />
+              //   </div>
             ))}
           </div>
         </article>
