@@ -8,6 +8,10 @@ export interface CardData {
   name: string;
   image: string;
   position: number;
+  activesCards: any[];
+  setActivesCards: Function;
+  resolveCards: number;
+  setResolveCards: Function;
 }
 export interface HomeData {
   image: string;

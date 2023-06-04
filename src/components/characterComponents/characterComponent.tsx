@@ -1,7 +1,6 @@
 import { CardData } from "@/interfaces/interfaces";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import styles from "./characterComponent.module.css";
+import React from "react";
 import { FaQuestion } from "react-icons/fa";
 
 const CharacterComponent: React.FC<CardData> = ({
@@ -9,56 +8,57 @@ const CharacterComponent: React.FC<CardData> = ({
   name,
   id,
   position,
+  activesCards,
+  setActivesCards,
+  resolveCards,
+  setResolveCards,
 }) => {
-  const [flipCard, setFlipCard] = useState(false);
   const flipcard = (id: number) => {
-    // Ingresar condición que si hay 2 cartas volteadas no entre en la función (longitud mayor o igual a 2)
-    console.log(id);
-    setFlipCard(true);
     const card = document.getElementById(String(position));
-    if (card === null) {
-      // comprobación para que no se de la vuelta si ya está resuelta
+    // check that the card is not resolve
+    if (card?.className.includes("resolve")) {
+      return;
     } else {
-      card?.classList.toggle("flip");
+      if (activesCards.length > 1) {
+        return;
+      } else {
+        activesCards.push({ id, position });
+        card?.classList.toggle("flip");
+        if (activesCards.length === 2) {
+          setTimeout(() => {
+            // check if the selected cards are equal
+            if (activesCards[0].id === activesCards[1].id) {
+              setResolveCards(resolveCards + 1);
+              setActivesCards([]);
+              // assign resolve classname
+              activesCards.map((card) => {
+                const slectCard = document.getElementById(
+                  String(card.position)
+                );
+                slectCard?.classList.toggle("resolve");
+              });
+            } else {
+              setTimeout(() => {
+                activesCards.map((card) => {
+                  const slectCard = document.getElementById(
+                    String(card.position)
+                  );
+                  slectCard?.classList.toggle("flip");
+                }, 1000);
+              });
+              setActivesCards([]);
+            }
+          }, 1000);
+        }
+      }
     }
-    // Hacer un push a la variable que controla las cartas que se dan la vuelta
-
-    // Esto hay que llevárselo al useEfect
-    setTimeout(() => {
-      card?.classList.toggle("flip");
-    }, 3000);
   };
 
-  // useEffect(() => {
-  //   const card = document.getElementById(String(id));
-  //   card?.addEventListener("click", function () {
-  //     console.log(id);
-  //     card.classList.toggle("flip");
-  //     return this.removeEventListener;
-  //   });
-  // }, [id]);
-  console.log(styles);
   return (
-    // <div
-    //   className={styles.card_container}
-    //   id={String(position)}
-    //   onClick={() => flipcard(position)}
-    // >
-    //   <div className={styles.flip_card}>
-    //     <div className={styles.flip_card_front}>
-    //       <FaQuestion />
-    //     </div>
-    //     <div className={styles.flip_card_back}>
-    //       {/* <h1>{name}</h1> */}
-    //       <img src={image} alt={`${name}`} width={50} height={50} />
-    //     </div>
-    //   </div>
-    // </div>
-
     <div
       className="card-container"
       id={String(position)}
-      onClick={() => flipcard(position)}
+      onClick={activesCards.length <= 2 ? () => flipcard(id) : () => {}}
     >
       <div className="flip-card">
         <div className="flip-card-front">

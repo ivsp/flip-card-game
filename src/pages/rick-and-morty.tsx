@@ -10,18 +10,25 @@ import {
 import styles from "@/styles/Rick.module.css";
 import CharacterComponent from "@/components/characterComponents/characterComponent";
 import useWindowSize from "@/hooks/useWindowSize";
-import { BREAKPOINT_DESKTOP } from "@/global/const";
+import { BREAKPOINT_DESKTOP, ROUTES } from "@/global/const";
+import { Fireworks } from "@fireworks-js/react";
+import { useRouter } from "next/router";
 
 const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
   characters,
 }) => {
   const size = useWindowSize();
+  const router = useRouter();
   const [numberOfImages, setNumberOfImages] = useState(
     size > BREAKPOINT_DESKTOP ? 9 : 8
   );
   const [selectedCharacters, setSelectedCharacters] = useState<CardData[] | []>(
     []
   );
+  const [activesCards, setActivesCards] = useState([]);
+  const [gameFinish, setGameFinish] = useState(false);
+  const [resolveCards, setResolveCards] = useState(0);
+
   function shuffleAndSliceArray(n: number, array: RickMortyCharacter[]) {
     const shuffled: RickMortyCharacter[] = array.sort(
       () => 0.5 - Math.random()
@@ -33,6 +40,11 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
   function shuffleAArray(array: CardData[]) {
     const shuffled: CardData[] = array.sort(() => 0.5 - Math.random());
     return shuffled;
+  }
+
+  function restartGame() {
+    router.reload();
+    // actualizar la variable de estado que controla el fetch de datos
   }
   useEffect(() => {
     if (size > BREAKPOINT_DESKTOP) setNumberOfImages(9);
@@ -47,6 +59,10 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
         name: char.name,
         image: char.image,
         position: i,
+        activesCards: [],
+        setActivesCards: () => {},
+        resolveCards: 0,
+        setResolveCards: () => {},
       };
     });
     const duplicatedData = data.concat(data);
@@ -54,6 +70,12 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
     setSelectedCharacters(shuffleDuplicatedData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size, numberOfImages]);
+
+  useEffect(() => {
+    console.log("resolvecards useEffect:", resolveCards);
+    console.log("number of images", numberOfImages);
+    if (resolveCards === numberOfImages) setGameFinish(true);
+  }, [numberOfImages, resolveCards, setGameFinish]);
 
   /**
    * Crear una variable que recoja 2 cartas seleccionadas. Pasaremos por props para hacer un push a esa variable
@@ -89,10 +111,37 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
                 image={char.image}
                 id={char.id}
                 position={i}
+                activesCards={activesCards}
+                setActivesCards={setActivesCards}
+                resolveCards={resolveCards}
+                setResolveCards={setResolveCards}
               />
               //   </div>
             ))}
           </div>
+          {gameFinish && (
+            <div>
+              <Fireworks
+                options={{
+                  rocketsPoint: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+                style={{
+                  top: 0,
+                  position: "absolute",
+                  left: "23%",
+                  width: "55%",
+                  height: "100%",
+                  background: "transparent",
+                }}
+              />
+              <p onClick={() => restartGame()} className={styles.playAgain}>
+                PLAY AGAIN
+              </p>
+            </div>
+          )}
         </article>
       </Layaout>
     </>

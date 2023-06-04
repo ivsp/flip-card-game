@@ -31,6 +31,7 @@
   max-width: 900px;
   gap: 5px;
   margin: 2rem 0;
+  position: relative;
 }
 
 .cardsContainer__item {
@@ -53,6 +54,18 @@
   height: 100%;
   width: 100%;
   border-radius: 10px;
+}
+
+.playAgain {
+  background-color: #d6ca08;
+  width: fit-content;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: solid 2.3px #000;
+  position: relative;
+  z-index: 99999999;
+  margin-bottom: 2rem;
 }
 
 /* Enable hover only on non-touch devices */

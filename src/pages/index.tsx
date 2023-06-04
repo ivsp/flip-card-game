@@ -26,8 +26,8 @@ export default function Home() {
             Selecciona una de las categorías para empezar a jugar!
           </h1>
           <div className={styles.cardsContainer}>
-            {CHARACTERS.map((char) => (
-              <div key={char.image} className={styles.cardsContainer__item}>
+            {CHARACTERS.map((char, i) => (
+              <div key={i} className={styles.cardsContainer__item}>
                 <FaQuestion />
               </div>
             ))}

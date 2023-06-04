@@ -1,17 +1,21 @@
 export const BREAKPOINT_DESKTOP = 800;
 
 export const ROUTES = [
+  //   {
+  //     label: "home",
+  //     value: "/", // 0
+  //   },
   {
     label: "Rick and Morty",
-    value: "/rick-and-morty",
+    value: "/rick-and-morty", // 1
   },
   {
     label: "Pokemon",
-    value: "/pokemon",
+    value: "/pokemon", // 2
   },
   {
     label: "Marvel",
-    value: "/marvel",
+    value: "/marvel", // 3
   },
   // {
   //     label: 'Cocktails',

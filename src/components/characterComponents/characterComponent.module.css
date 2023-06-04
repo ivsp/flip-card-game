@@ -23,24 +23,24 @@
     height: 100%;
   } */
 
-.card_container {
+.cardContainer {
   width: 16%;
   height: 150px;
   perspective: 1000px;
   border-radius: 20px;
 }
-.flip_card {
+.flipCard {
   position: relative;
   width: 100%;
   height: 100%;
   transition: transform 0.5s;
   transform-style: preserve-3d;
 }
-.card_container.flip .flip_card {
+.cardContainer.flip .flipCard {
   transform: rotateY(180deg);
 }
-.flip_card_front,
-.flip_card_back {
+.flipCardFront,
+.flipCardBack {
   padding: 30px;
   width: 100%;
   height: 100%;
@@ -49,37 +49,16 @@
   backface-visibility: hidden;
   border-radius: 20px;
 }
-.flip_card_front {
+.flipCardFront {
   background-color: #333;
   color: #fff;
 }
-.flip_card_back {
+.flipCardBack {
   background-color: #05486b;
   color: #fff;
   transform: rotateY(180deg);
 }
-.flip_card_back img {
+.flipCardBack img {
   width: 100%;
   height: 95%;
 }
-
-/* .card_front {
-  position: absolute;
-  width: 100%;
-  hegth: 100%;
-  backface-visivility: hidden;
-  background: yellow;
-  color: black;
-  text-align: center;
-}
-
-.card_back {
-  position: absolute;
-  width: 100%;
-  hegth: 100%;
-  backface-visivility: hidden;
-  background: green;
-  color: white;
-  ext-align: center;
-  transform: rotateY(180deg);
-} */
