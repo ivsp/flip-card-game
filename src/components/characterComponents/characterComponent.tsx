@@ -15,6 +15,7 @@ const CharacterComponent: React.FC<CardData> = ({
 }) => {
   const flipcard = (id: number) => {
     const card = document.getElementById(String(position));
+    if (activesCards[0]?.position === position) return;
     // check that the card is not resolve
     if (card?.className.includes("resolve")) {
       return;

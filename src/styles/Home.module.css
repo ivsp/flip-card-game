@@ -48,6 +48,17 @@
   width: 100%;
   padding: 5px;
 }
+.playAgain {
+  background-color: #d6ca08;
+  width: fit-content;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: solid 2.3px #000;
+  position: relative;
+  z-index: 99999999;
+  margin-bottom: 2rem;
+}
 
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {

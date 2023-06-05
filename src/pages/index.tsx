@@ -1,14 +1,86 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import useWindowSize from "@/hooks/useWindowSize";
-import { CHARACTERS } from "@/global/const";
-import { useState } from "react";
+import { BREAKPOINT_DESKTOP, CHARACTERS } from "@/global/const";
+import { useContext, useEffect, useState } from "react";
 import Layaout from "@/components/layaout/layaout";
-import { FaQuestion } from "react-icons/fa";
+import { GetStaticProps, NextPage } from "next";
+import {
+  CardData,
+  GetRickMortyCharacterResults,
+  RickMortyCharacter,
+} from "@/interfaces/interfaces";
+import { useRouter } from "next/router";
+import CharacterComponent from "@/components/characterComponents/characterComponent";
+import Fireworks from "@fireworks-js/react";
+import { CharactersContext } from "@/context/characters.context";
 
-export default function Home() {
+const Home: NextPage<{ rickCharacters: RickMortyCharacter[] }> = ({
+  rickCharacters,
+}) => {
   const size = useWindowSize();
-  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+  const { charactersTheme, setCharactersTheme } = useContext(CharactersContext);
+  const [characters, setCharacters] = useState(rickCharacters);
+  // const [charactersTheme, setCharactersTheme] = useState(
+  //   "Rick and Morty characters"
+  // );
+  console.log(charactersTheme);
+  const [numberOfImages, setNumberOfImages] = useState(
+    size > BREAKPOINT_DESKTOP ? 9 : 8
+  );
+  const [selectedCharacters, setSelectedCharacters] = useState<CardData[] | []>(
+    []
+  );
+  const [activesCards, setActivesCards] = useState([]);
+  const [gameFinish, setGameFinish] = useState(false);
+  const [resolveCards, setResolveCards] = useState(0);
+
+  function shuffleAndSliceArray(n: number, array: RickMortyCharacter[]) {
+    const shuffled: RickMortyCharacter[] = array.sort(
+      () => 0.5 - Math.random()
+    );
+    const selected: RickMortyCharacter[] = shuffled.slice(0, n);
+    return selected;
+  }
+
+  function shuffleAArray(array: CardData[]) {
+    const shuffled: CardData[] = array.sort(() => 0.5 - Math.random());
+    return shuffled;
+  }
+
+  function restartGame() {
+    router.reload();
+    // actualizar la variable de estado que controla el fetch de datos
+  }
+  useEffect(() => {
+    if (size > BREAKPOINT_DESKTOP) setNumberOfImages(9);
+    else setNumberOfImages(8);
+  }, [size]);
+
+  useEffect(() => {
+    const suffleData = shuffleAndSliceArray(numberOfImages, characters);
+    const data: CardData[] = suffleData.map((char, i) => {
+      return {
+        id: char.id,
+        name: char.name,
+        image: char.image,
+        position: i,
+        activesCards: [],
+        setActivesCards: () => {},
+        resolveCards: 0,
+        setResolveCards: () => {},
+      };
+    });
+    const duplicatedData = data.concat(data);
+    const shuffleDuplicatedData = shuffleAArray(duplicatedData);
+    setSelectedCharacters(shuffleDuplicatedData);
+  }, [size, numberOfImages, characters]);
+
+  useEffect(() => {
+    if (resolveCards === numberOfImages) setGameFinish(true);
+  }, [numberOfImages, resolveCards, setGameFinish]);
+
   return (
     <>
       <Head>
@@ -21,19 +93,62 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layaout>
-        <section className={styles.cardsContainerLimits}>
-          <h1 className={styles.cardsContainerLimits_title}>
-            Selecciona una de las categorías para empezar a jugar!
-          </h1>
+        <h1 className={styles.cardsContainerLimits_title}>{charactersTheme}</h1>
+        <article className={styles.cardsContainerLimits}>
           <div className={styles.cardsContainer}>
-            {CHARACTERS.map((char, i) => (
-              <div key={i} className={styles.cardsContainer__item}>
-                <FaQuestion />
-              </div>
+            {selectedCharacters.map((char, i) => (
+              <CharacterComponent
+                key={i}
+                name={char.name}
+                image={char.image}
+                id={char.id}
+                position={i}
+                activesCards={activesCards}
+                setActivesCards={setActivesCards}
+                resolveCards={resolveCards}
+                setResolveCards={setResolveCards}
+              />
             ))}
           </div>
-        </section>
+          {gameFinish && (
+            <div>
+              <Fireworks
+                options={{
+                  rocketsPoint: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+                style={{
+                  top: 0,
+                  position: "absolute",
+                  left: "23%",
+                  width: "55%",
+                  height: "100%",
+                  background: "transparent",
+                }}
+              />
+              <p onClick={() => restartGame()} className={styles.playAgain}>
+                PLAY AGAIN
+              </p>
+            </div>
+          )}
+        </article>
       </Layaout>
     </>
   );
-}
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const rickResponse = await fetch(
+    "https://rickandmortyapi.com/api/character/?page=1"
+  );
+  const { results }: GetRickMortyCharacterResults = await rickResponse.json();
+  return {
+    props: {
+      rickCharacters: results,
+    },
+  };
+};
+
+export default Home;

@@ -1,3 +1,16 @@
+import { ReactNode } from "react";
+
+export type ContextProps = {
+  children: ReactNode;
+};
+
+export type CharactersContextType = {
+  characters: CardData[];
+  setCharacters: Function;
+  charactersTheme: string;
+  setCharactersTheme: Function;
+};
+
 export interface HeaderMobileProps {
   openModal: boolean;
   setOpenModal: Function;

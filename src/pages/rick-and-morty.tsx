@@ -72,8 +72,6 @@ const RickAndMortyPage: NextPage<{ characters: RickMortyCharacter[] }> = ({
   }, [size, numberOfImages]);
 
   useEffect(() => {
-    console.log("resolvecards useEffect:", resolveCards);
-    console.log("number of images", numberOfImages);
     if (resolveCards === numberOfImages) setGameFinish(true);
   }, [numberOfImages, resolveCards, setGameFinish]);
 
